@@ -13,11 +13,11 @@ import MineralInterest from './components/MineralInterest';
 
 const EditTractOwnership = ({ value = [], onChange = () => { } }) => {
   const dataMap = Map(value.map(mi => [
-    mi.id,
-    {
-      ...mi,
-      npris: Map((mi.npris || []).map(npri => [npri.id, npri]))
-    }
+      mi.id,
+      {
+        ...mi,
+        npris: Map((mi.npris || []).map(npri => [npri.id, npri]))
+      }
   ]));
 
   const [data, setData] = useState(dataMap);

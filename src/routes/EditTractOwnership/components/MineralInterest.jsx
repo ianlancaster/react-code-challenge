@@ -1,3 +1,5 @@
+import React from 'react';
+import uuidv4 from 'uuid/v4';
 import { Col } from 'react-bootstrap';
 import Icon from '../../../components/Icon';
 import IconButton from '../../../components/IconButton';
@@ -6,13 +8,27 @@ import PercentCol from '../../../components/PercentCol'
 import ButtonCol from '../../../components/ButtonCol'
 import TextCol from '../../../components/TextCol'
 import NPRI from './NPRI';
-import React from 'react';
 
 const MineralInterest = ({ id, owner, interest, lease, npris, setData, data }) => {
   const handleMineralInterestChange = (id, field) => ({ target: { value }}) => {
     setData(data.set(id, {
       ...data.get(id),
       [field]: value
+    }))
+  };
+
+  const createEmptyNpri = () => ({
+    id: uuidv4(),
+    owner: '',
+    interest: ''
+  });
+
+  const handleAddNpri = () => {
+    const mineralInterest = data.get(id);
+    const npri = createEmptyNpri();
+    setData(data.set(id, {
+      ...mineralInterest,
+      npris: mineralInterest.npris.set(npri.id, npri)
     }))
   };
 
@@ -46,10 +62,23 @@ const MineralInterest = ({ id, owner, interest, lease, npris, setData, data }) =
           <Icon icon="remove" />
         </ButtonCol>
       </Row>
-      {npris.entrySeq().map(([key, value]) => <NPRI key={key} {...value}/>)}
+      {npris.entrySeq().map(([key, value]) => (
+        <NPRI
+          key={key}
+          parentId={id}
+          data={data}
+          setData={setData}
+          {...value}
+        />
+      ))}
       <Row>
         <Col>
-          <IconButton icon="add">Add NPRI</IconButton>
+          <IconButton
+            icon="add"
+            onClick={handleAddNpri}
+          >
+            Add NPRI
+          </IconButton>
         </Col>
       </Row>
     </>
