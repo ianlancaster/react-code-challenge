@@ -18,6 +18,14 @@ const NPRI = ({ id, owner, interest, parentId, data, setData }) => {
     }))
   };
 
+  const handleRemoveNpri = () => {
+    const mineralInterest = data.get(parentId);
+    setData(data.set(parentId, {
+      ...mineralInterest,
+      npris: mineralInterest.npris.delete(id)
+    }))
+  };
+
   return (
     <Row data-testid={`npri-${id}`}>
       <IndentTextCol
@@ -34,7 +42,10 @@ const NPRI = ({ id, owner, interest, parentId, data, setData }) => {
         value={interest}
       />
       <Col />
-      <ButtonCol>
+      <ButtonCol
+        data-testid={`npri-${id}.remove`}
+        onClick={handleRemoveNpri}
+      >
         <Icon icon="remove" />
       </ButtonCol>
     </Row>
