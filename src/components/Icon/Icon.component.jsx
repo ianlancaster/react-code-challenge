@@ -34,10 +34,10 @@ const getIconProps = icon => {
   }
 };
 
-const Icon = ({ icon }) => {
-  const iconProps = getIconProps(icon);
+const Icon = props => {
+  const iconProps = getIconProps(props.icon);
 
-  return <FontAwesomeIcon {...iconProps} />;
+  return <FontAwesomeIcon {...iconProps} style={props.style} />;
 };
 
 export default Icon;
