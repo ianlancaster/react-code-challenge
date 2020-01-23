@@ -3,10 +3,10 @@ import { Col, Container, Jumbotron, Row } from 'react-bootstrap'
 import uuidv4 from 'uuid/v4'
 
 import 'bootstrap/dist/css/bootstrap.css';
-import './App.css';
+import './App.styles.css';
 
-import EditTractOwnership from './EditTractOwnership'
-import Icon from './Icon'
+import EditTractOwnership from '../routes/EditTractOwnership'
+import Icon from '../components/Icon'
 
 const tractOwnerships = [{
   id: uuidv4(),
@@ -24,7 +24,7 @@ const tractOwnerships = [{
   }]
 }]
 
-function App() {
+function AppComponent() {
   return (
     <Container>
       <Row>
@@ -43,4 +43,4 @@ function App() {
   );
 }
 
-export default App;
+export default AppComponent;
