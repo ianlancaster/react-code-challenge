@@ -7,12 +7,21 @@ import {
   Form,
   Button
 } from 'react-bootstrap'
+import { Map } from 'immutable'
 import uuidv4 from 'uuid/v4';
 import IconButton from '../../components/IconButton';
 import Icon from '../../components/Icon';
 
 const EditTractOwnership = ({ value = [], onChange = () => { } }) => {
-  const [data, setData] = useState(value)
+  const dataMap = Map(value.map(mi => [
+    mi.id,
+    {
+      ...mi,
+      npris: Map((mi.npris || []).map(npri => [npri.id, npri]))
+    }
+  ]));
+
+  const [data, setData] = useState(dataMap);
 
   const Row = props => (
     <BaseRow
@@ -56,10 +65,7 @@ const EditTractOwnership = ({ value = [], onChange = () => { } }) => {
   );
 
   const NPRI = ({ id, owner, interest }) => (
-    <Row
-      key={`npri-${id}`}
-      data-testid={`npri-${id}`}
-    >
+    <Row data-testid={`npri-${id}`}>
       <IndentTextCol
         value={owner}
         placeholder="Owner"
@@ -76,34 +82,36 @@ const EditTractOwnership = ({ value = [], onChange = () => { } }) => {
     </Row>
   );
 
-  const MineralInterest = ({ id, owner, interest, lease, npris = [] }) => (
+  const handleMineralInterestChange = (id, field) => e => {
+    console.log(e.target.value)
+  };
+
+  const MineralInterest = ({ id, owner, interest, lease, npris }) => (
     <>
-      <Row
-        key={`mineralInterest-${id}`}
-        data-testid={`mineralInterest-${id}`}
-      >
+      <Row data-testid={`mineralInterest-${id}`}>
         <TextCol
           placeholder="Owner"
+          onChange={handleMineralInterestChange(id, 'owner')}
+          data-testid={`mineralInterest-${id}.owner`}
           value={owner}
         />
         <PercentCol
           placeholder="Mineral Interest"
+          data-testid={`mineralInterest-${id}.interest`}
           value={interest}
         />
         <Col/>
         <TextCol
           placeholder="Lease"
+          data-testid={`mineralInterest-${id}.lease`}
           value={lease}
         />
         <ButtonCol>
           <Icon icon="remove" />
         </ButtonCol>
       </Row>
-      {npris.map(npri => <NPRI {...npri}/>)}
-      <Row
-        key={`addNpri-${id}`}
-        id={`addNpri-${id}`}
-      >
+      {npris.entrySeq().map(([key, value]) => <NPRI key={key} {...value}/>)}
+      <Row>
         <Col>
           <IconButton icon="add">Add NPRI</IconButton>
         </Col>
@@ -126,25 +134,28 @@ const EditTractOwnership = ({ value = [], onChange = () => { } }) => {
     owner: '',
     interest: '',
     lease: '',
-    npris: []
+    npris: Map([])
   });
 
   const handleAddMineralInterest = () => {
-    setData([
-      ...data,
-      createEmptyMineralInterest()
-    ]);
+    const mi = createEmptyMineralInterest();
+    setData(data.set(mi.id, mi));
   };
 
   useEffect(() => {
-    onChange(data)
+    onChange(data.toArray().map(mi => ({
+      ...mi[1],
+      npris: mi[1].npris.toArray().map(npri => npri[1])
+    })))
   });
 
   return (
     <Form>
       <Container>
         <TableHeader />
-        {data.map(mineralInterest => <MineralInterest {...mineralInterest} />)}
+        {data.entrySeq().map(([key, value]) => (
+          <MineralInterest key={key} {...value} />
+        ))}
         <Row>
           <Col>
             <IconButton
