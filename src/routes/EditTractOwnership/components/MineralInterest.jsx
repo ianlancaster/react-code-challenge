@@ -32,6 +32,10 @@ const MineralInterest = ({ id, owner, interest, lease, npris, setData, data }) =
     }))
   };
 
+  const handleRemoveMineralInterest = () => {
+    setData(data.delete(id))
+  };
+
   return (
     <>
       <Row
@@ -58,7 +62,10 @@ const MineralInterest = ({ id, owner, interest, lease, npris, setData, data }) =
           data-testid={`mineralInterest-${id}.lease`}
           value={lease}
         />
-        <ButtonCol>
+        <ButtonCol
+          data-testid={`mineralInterest-${id}.remove`}
+          onClick={handleRemoveMineralInterest}
+        >
           <Icon icon="remove" />
         </ButtonCol>
       </Row>
